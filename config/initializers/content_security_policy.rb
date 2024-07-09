@@ -14,7 +14,6 @@ Rails.application.configure do
     policy.style_src   :self, "'unsafe-inline'", :https
 
     connect_src = ['https://*.google-analytics.com', 'https://*.analytics.google.com', 'https://*.googletagmanager.com']
-    connect_src += ['http://localhost:3035', 'ws://localhost:3035'] if Rails.env.development?
     policy.connect_src :self, :https, *connect_src
 
     # Specify URI for violation reports

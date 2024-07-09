@@ -3,25 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <title><%= page_title %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b0c0c" />
-
-    <link rel="icon" sizes="48x48" href="<%= image_path('favicon.ico') %>">
-    <link rel="icon" sizes="any" href="<%= image_path('favicon.svg') %>" type="image/svg+xml">
-    <link rel="mask-icon" href="<%= image_path('mask-icon.svg') %>" color="#0b0c0c">
-    <% %w[ 180 192 512 ].each do |size| %>
-      <link rel="apple-touch-icon" sizes="<%= size %>x<%= size %>" href="<%= image_path("ccs-icon-#{size}.png") %>">
-    <% end %>
-
-    <meta property="og:image" content="<%= image_path("ccs-opengraph-image.png") %>">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <meta name="turbolinks-cache-control" content="no-cache">
+    <%= tag :meta, name: 'viewport', content: 'width=device-width, initial-scale=1' %>
+    <%= tag :meta, property: 'og:image', content: asset_path('images/ccs-opengraph-image.png') %>
+    <%= tag :meta, name: 'theme-color', content: '#0b0c0c' %>
 
+    <%= favicon_link_tag asset_path('images/favicon.ico') %>
+    <%= favicon_link_tag asset_path('images/favicon.svg'), type: "image/svg+xml" %>
+    <%= favicon_link_tag asset_path('images/ccs-icon-mask.svg'), rel: 'mask-icon', type: 'image/svg', color: "#0b0c0c" %>
+    <% %w[ 180 192 512 ].each do |size| %>
+    <%= favicon_link_tag asset_path("images/ccs-icon-#{size}.png"), rel: 'apple-touch-icon', type: 'image/png', size:"#{size}x#{size}" %>
+    <% end %>
+
+    <%= tag :meta, name: 'turbolinks-cache-control', content: 'no-cache' %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'govuk', 'ccs', 'data-turbolinks-track': 'reload', defer: false %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload', type: 'module' %>
 
     <%= render partial: '/shared/google/tag_manager_head' if Marketplace.google_tag_manager_tracking_id.present? %>
   </head>

@@ -1,0 +1,22 @@
+#!/bin/bash -e
+
+# because the APP_RUN_SIDEKIQ parameter is defined in /Environment/ccs/cmp and not /Environment/ccs/cmpsidekiq,
+# we have to check for it being false, so we can run the rails server, otherwise run sidekiq
+if [ "$APP_RUN_SIDEKIQ" = 'FALSE' ]; then
+  echo TCPAddr $CLAMAV_SERVER_IP > /etc/clamav/clamd.conf && echo TCPSocket 3310 >> /etc/clamav/clamd.conf
+
+  ./bin/rails db:migrate:ignore_concurrent
+
+  if [ "$APP_RUN_PRECOMPILE_ASSETS" = 'TRUE' ]; then
+    ./bin/rails assets:sync
+  fi
+
+  if [ "$APP_RUN_RAKE_TASKS" = 'TRUE' ]; then
+    ./bin/rails command:run
+  fi
+
+  exec "${@}"
+else
+  bundle exec nginx -g "daemon on;"
+  bundle exec sidekiq -C ./config/sidekiq.yml -e production
+fi

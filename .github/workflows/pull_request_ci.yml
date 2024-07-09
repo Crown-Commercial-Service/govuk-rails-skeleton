@@ -1,0 +1,12 @@
+name: "CI for Pull Requests"
+
+on:
+  - pull_request
+
+jobs:
+  run-ci:
+    uses: ./.github/workflows/ci.yml
+    with:
+      publish_test_report: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' }}
+    secrets:
+      cc_test_reporter_id: ${{ secrets.CC_TEST_REPORTER_ID }}

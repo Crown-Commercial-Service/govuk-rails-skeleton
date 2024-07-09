@@ -63,7 +63,7 @@ module FacilitiesManagement
         options[:headers] ||= [HEADERS] * options[:sheets].count
         @status = options[:headers].first.include? 'Status'
 
-        super(**options)
+        super
       end
 
       def build
@@ -100,7 +100,7 @@ module FacilitiesManagement
         options[:sheets] ||= SHEETS
         options[:headers] ||= self.class.generate_headers
 
-        super(**options)
+        super
       end
 
       def self.sheets_with_extra_headers(sheets_with_extra_headers)
@@ -175,7 +175,7 @@ module FacilitiesManagement
         options[:sheets] ||= SHEETS
         options[:headers] ||= [HEADERS] * 9
 
-        super(**options)
+        super
       end
 
       HEADERS = (['Supplier', 'DUNS Number'] + FacilitiesManagement::Region.all.map(&:code)[0..-2] + ['NC01', 'OS01']).freeze

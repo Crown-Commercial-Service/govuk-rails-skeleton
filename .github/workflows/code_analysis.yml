@@ -1,0 +1,25 @@
+name: "Analyse Ruby code with RuboCop and JavaScript code with ESLint"
+
+on:
+  workflow_call:
+
+jobs:
+  code_analysis:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1.185.0
+        with:
+          bundler-cache: true
+
+      - name: Run rubocop
+        run: bundle exec rubocop
+      
+      - name: Check JavaScript code quality
+        run: |
+          yarn install
+          yarn lint

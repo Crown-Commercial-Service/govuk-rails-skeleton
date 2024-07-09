@@ -40,7 +40,7 @@ RSpec.describe 'layouts/application.html.erb' do
       it 'displays link to support email address above footer' do
         render
 
-        expect(rendered).to have_css(".footer-feedback #{support_link_selector}")
+        expect(rendered).to have_css(".ccs-contact-us #{support_link_selector}")
       end
     end
   end

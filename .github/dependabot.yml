@@ -5,16 +5,84 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
+
+    # Group packages into shared PR
+    groups:
+      rails:
+        patterns:
+          - 'rails'
+          - 'action*'
+          - 'active*'
+
+      rubocop:
+        patterns:
+          - 'rubocop'
+          - 'rubocop-*'
+      
+      feature_tests:
+        patterns:
+          - 'selenium-webdriver'
+          - 'cucumber-rails'
+          - 'database_cleaner'
+          - 'site_prism'
+          - 'axe-core-*'
+
+      aws:
+        patterns:
+          - 'aws*'
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday"
+
+    # Group packages into shared PR
+    groups:
+      rails:
+        patterns:
+          - '@rails/*'
+          - 'turbolinks'
+          - 'turbolinks*'
+          - '@types/rails__ujs'
+          - '@types/turbolinks'
+
+      lint:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - 'stylelint'
+          - 'stylelint-*'
+          - '@stylistic/*'
+          - 'typescript-eslint'
+          - '@types/eslint__js'
+
+      scss:
+        patterns:
+          - 'sass'
+          - 'cssnano'
+          - 'cssnano-*'
+          - 'postcss'
+          - 'postcss-*'
+
+      rollup:
+        patterns:
+          - '@rollup/*'
+          - 'rollup'
+          - 'rollup-*'
+
+      frontend:
+        patterns:
+          - 'ccs-frontend'
+          - 'govuk-frontend'
+
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

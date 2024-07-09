@@ -10,7 +10,7 @@ module FacilitiesManagement
         validate :snapshot_date_present, :snapshot_date_real, :snapshot_time_real, :supplier_data_present
 
         def initialize(attributes = {})
-          super(attributes)
+          super
           create_snapshot_date_time
         end
 

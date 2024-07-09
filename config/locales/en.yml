@@ -166,7 +166,7 @@ en:
     passcap: at least one capital letter
     passeight: at least 8 characters
     passnum: at least one number
-    passsymbol_html: at least one symbol (eg ?, !, &pound;, &percnt;)
+    passsymbol: at least one symbol (eg ?, !, £, %)
     pdf_html: <abbr title="PDF">PDF</abbr>
     radio_driver: or
     reset_password: Reset password
@@ -424,10 +424,6 @@ en:
         text: Privacy policy
       skip: Skip to main content
       title: Crown Commercial Service
-    contact_us:
-      contact_us: Contact us (opens in a new tab)
-      having_problems: Having problems with this service?
-      support_html: "%{link} for support."
     cookie-banner:
       accept_cookies: Accept analytics cookies
       change_cookie_settings_html: You can %{cookie_settings_link} at any time.
@@ -440,6 +436,11 @@ en:
       view_cookies: View cookies
       we_use_some_analytics_cookies: We’d also like to use analytics cookies so we can understand how you use the service and make improvements.
       we_use_some_essential_cookies: We use some essential cookies to make this service work.
+    footer:
+      contact_us:
+        contact_us: 'Contact us (opens in a new tab) '
+        having_problems: 'Having problems with this service? '
+        support: for support.
   miles:
     unit:
       one: mile

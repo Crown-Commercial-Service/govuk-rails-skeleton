@@ -1,133 +1,134 @@
-FROM ruby:3.3.1-alpine
+# Set the alpine version so they match for both images
+ARG ALPINE_VERSION=3.19
 
-# Build information
-ARG GIT_OWNER
-LABEL git_owner=$GIT_OWNER
-ENV GIT_OWNER=$GIT_OWNER
+# Set the NodeJS version
+ARG NODE_VERSION=iron
 
-ARG GIT_REPO
-LABEL git_repo=$GIT_REPO
-ENV GIT_REPO=$GIT_REPO
+# Set the Ruby version
+ARG RUBY_VERSION=3.3.3
 
-ARG GIT_BRANCH
-LABEL git_branch=$GIT_BRANCH
-ENV GIT_BRANCH=$GIT_BRANCH
+# Pull in the NodeJS image
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS node
 
+# Pull in the Ruby image
+FROM ruby:${RUBY_VERSION}-alpine${ALPINE_VERSION} AS base
+
+# Rails app lives here
+WORKDIR /rails
+
+# Set production environment
+ENV RAILS_ENV="production" \
+    RAILS_SERVE_STATIC_FILES="true" \
+    RAILS_LOG_TO_STDOUT="true" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development test"
+
+# Set environment args from build args
 ARG GIT_COMMIT
-LABEL git_commit=$GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
 
-ARG BUILD_TIME
-LABEL build_time=$BUILD_TIME
-ENV BUILD_TIME=$BUILD_TIME
-
-ARG CCS_VERSION
-LABEL ccs_version=$CCS_VERSION
-ENV CCS_VERSION=$CCS_VERSION
-
 ARG APP_RUN_SIDEKIQ
-LABEL app_run_sidekiq=$APP_RUN_SIDEKIQ
 ENV APP_RUN_SIDEKIQ=$APP_RUN_SIDEKIQ
 
-ARG APP_RUN_NUTS_IMPORT
-LABEL app_run_nuts_import=$APP_RUN_NUTS_IMPORT
-ENV APP_RUN_NUTS_IMPORT=$APP_RUN_NUTS_IMPORT
-
-ARG APP_RUN_NUTS_IMPORT_IN_BG
-LABEL app_run_nuts_import_in_bg=$APP_RUN_NUTS_IMPORT_IN_BG
-ENV APP_RUN_NUTS_IMPORT_IN_BG=$APP_RUN_NUTS_IMPORT_IN_BG
-
-ARG APP_UPDATE_NUTS_NOW
-LABEL app_update_nuts_now=$APP_UPDATE_NUTS_NOW
-ENV APP_UPDATE_NUTS_NOW=$APP_UPDATE_NUTS_NOW
-
-ARG APP_RUN_PC_TABLE_MIGRATION
-LABEL app_run_pc_table_migration=$APP_RUN_PC_TABLE_MIGRATION
-ENV APP_RUN_PC_TABLE_MIGRATION=$APP_RUN_PC_TABLE_MIGRATION
-
-ARG APP_RUN_POSTCODES_IMPORT
-LABEL app_run_postcodes_import=$APP_RUN_POSTCODES_IMPORT
-ENV APP_RUN_POSTCODES_IMPORT=$APP_RUN_POSTCODES_IMPORT
-
-ARG APP_RUN_PROCUREMENTS_CLEANUP
-LABEL app_run_procurements_cleanup=$APP_RUN_PROCUREMENTS_CLEANUP
-ENV APP_RUN_PROCUREMENTS_CLEANUP=$APP_RUN_PROCUREMENTS_CLEANUP
-
-ARG APP_RUN_POSTCODES_CLEANUP
-LABEL app_run_postcodes_cleanup=$APP_RUN_POSTCODES_CLEANUP
-ENV APP_RUN_POSTCODES_CLEANUP=$APP_RUN_POSTCODES_CLEANUP
-
 ARG APP_RUN_RAKE_TASKS
-LABEL app_run_rake_tasks=$APP_RUN_RAKE_TASKS
 ENV APP_RUN_RAKE_TASKS=$APP_RUN_RAKE_TASKS
 
 ARG CLAMAV_SERVER_IP
-LABEL clam_av_server_ip=$CLAMAV_SERVER_IP
 ENV CLAMAV_SERVER_IP=$CLAMAV_SERVER_IP
 
 ARG ASSETS_BUCKET
-LABEL assets_bucket=$ASSETS_BUCKET
 ENV ASSETS_BUCKET=$ASSETS_BUCKET
 
 ARG APP_RUN_PRECOMPILE_ASSETS
-LABEL app_run_precompile_assets=$APP_RUN_PRECOMPILE_ASSETS
 ENV APP_RUN_PRECOMPILE_ASSETS=$APP_RUN_PRECOMPILE_ASSETS
 
-# Potential fix for log4j vulnerability
-ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
-
+# Collects the environment variables from the parameter store
 ##_PARAMETER_STORE_MARKER_##
 
-ENV BUILD_PACKAGES curl-dev ruby-dev postgresql-dev build-base tzdata clamav clamav-daemon
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
-# Update and install base packages
-RUN apk update \
-    && apk upgrade \
-    && apk add bash $BUILD_PACKAGES npm git
+# As this is a multistage Docker image build
+# we will pull in the contents from the previous node image build stage
+# to our current ruby build image stage
+# so that the ruby image build stage has the correct nodejs version
+COPY --from=node /usr/local/bin /usr/local/bin
 
-# Install yarn to manage Node.js dependencies
-RUN npm install yarn -g
+# Install application dependencies
+RUN apk add --update --no-cache \
+    build-base \
+    curl \
+    git \
+    libpq-dev \
+    npm \
+    tzdata
 
-# Throw errors if Gemfile has been modified since Gemfile.lock
-RUN bundle config --global frozen 1 \
-    && bundle config set deployment 'true' \
-    && bundle config set without 'development test'
+# Enable corepack for yarn
+RUN corepack enable
 
-# Create app directory
-WORKDIR /usr/src/app
-
+# Install application gems
 COPY Gemfile Gemfile.lock ./
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
-# Install Gem dependencies
-RUN bundle install
+# Install node modules
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn
+RUN yarn workspaces focus --all --production
 
-# Install Node.js dependencies
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production --no-cache --ignore-scripts
-
+# Copy application code
 COPY . .
 
-# Run app in production environment
-ENV RAILS_ENV=production
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
 
-# Configure Rails to serve the assets
-ENV RAILS_SERVE_STATIC_FILES=true
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN GOOGLE_GEOCODING_API_KEY=dummy SECRET_KEY_BASE_DUMMY=1 APP_RUN_PRECOMPILE_ASSETS="FALSE" ./bin/rails assets:precompile
 
-# Send logs to STDOUT so that they can be sent to CloudWatch
-ENV RAILS_LOG_TO_STDOUT=true
+# Final stage for app image
+FROM base
 
-# Compile assets
-RUN GOOGLE_GEOCODING_API_KEY=dummy SECRET_KEY_BASE=dummy APP_RUN_PRECOMPILE_ASSETS="FALSE" bundle exec rails assets:precompile
+# Install packages needed for deployment
+RUN apk add --update --no-cache \
+    bash \
+    ca-certificates \
+    clamav \
+    clamav-daemon \
+    curl \
+    libpq-dev \
+    nginx \
+    tzdata
 
-RUN apk add nginx
+# Setup nginx for Sidekiq
 RUN mkdir -p /run/nginx
 COPY default.conf /etc/nginx/http.d/default.conf
+
+# Copy built artifacts: gems, application
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+RUN adduser rails -D --shell /bin/bash
+
+# Own the runtime files for the app
+RUN chown -R rails:rails db log storage tmp data
+
+# Own the runtime files for ClamAV
+RUN chown -R rails:rails /etc/clamav/clamd.conf
+
+# Own the runtime files for nginx
+RUN chown -R rails:rails /var/lib/nginx /var/log/nginx /var/run/nginx
+
+USER rails:rails
+
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Run the web app on port 8080
 ENV PORT=8080
 EXPOSE 8080
 
-# Ensure our entry point script is executable
-RUN chmod +x ./bin/docker-entrypoint.sh
-
-ENTRYPOINT ./bin/docker-entrypoint.sh
+# Start the server by default, this can be overwritten at runtime
+CMD ["./bin/rails", "server"]

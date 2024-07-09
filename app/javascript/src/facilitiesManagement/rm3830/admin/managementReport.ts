@@ -1,4 +1,4 @@
-import { FileUploadProgressWithoutBar, type StateToProgressWithoutProgressBar } from 'src/facilitiesManagement/uploadProgress'
+import { FileUploadProgressWithoutBar, type StateToProgressWithoutProgressBar } from '../../uploadProgress'
 
 const managementReportStateToProgress: StateToProgressWithoutProgressBar = {
   generating_csv: {

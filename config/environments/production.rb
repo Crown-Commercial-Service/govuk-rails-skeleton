@@ -23,11 +23,11 @@ Rails.application.configure do
   # Enable static file serving from the `/public` folder (turn off if using NGINX/Apache for it).
   config.public_file_server.enabled = true
 
-  # Compress the sass with sassc
-  config.sass.style = :compressed
+  # Compress CSS using a preprocessor
+  # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+  # config.assets.compile = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
@@ -90,8 +90,9 @@ Rails.application.configure do
   config.fail_silently = true
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  config.hosts << ENV.fetch('ENVIRONMENT_HOST', nil)
+  ENV.fetch('ENVIRONMENT_HOST', '').split(',').each do |application_domain|
+    config.hosts << application_domain
+  end
 
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  config.host_authorization = { exclude: ->(request) { request.path =~ /healthcheck/ } }
 end

@@ -1,4 +1,4 @@
-import { FileUploadProgressWithBar, type StateToProgressWithProgressBar } from 'src/facilitiesManagement/uploadProgress'
+import { FileUploadProgressWithBar, type StateToProgressWithProgressBar } from '../../uploadProgress'
 
 const adminStateToProgress: StateToProgressWithProgressBar = {
   not_started: {

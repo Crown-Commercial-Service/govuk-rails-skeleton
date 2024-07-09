@@ -28,22 +28,18 @@ concurrency:
   group: deploy-${{ inputs.environment }}
 
 jobs:
-  run-unit-tests:
-    uses: ./.github/workflows/unit_tests.yml
-
-  run-feature-tests:
-    uses: ./.github/workflows/feature_tests.yml
+  run-ci:
+    uses: ./.github/workflows/ci.yml
 
   deploy-to-application:
     runs-on: ubuntu-latest
     needs:
-      - run-unit-tests
-      - run-feature-tests
+      - run-ci
     environment:
       name: ${{ inputs.environment }}
     steps:
       - name: Trigger AWS CodePipeline - main container
-        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.4
+        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.5
         with:
           aws-region: ${{ secrets.AWS_PIPELINE_REGION }}
           aws-access-key: ${{ secrets.AWS_PIPELINE_ACCESS_KEY }}
@@ -53,13 +49,12 @@ jobs:
   deploy-to-sidekiq:
     runs-on: ubuntu-latest
     needs:
-      - run-unit-tests
-      - run-feature-tests
+      - run-ci
     environment:
       name: ${{ inputs.environment }}
     steps:
       - name: Trigger AWS CodePipeline - sidekiq container
-        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.4
+        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.5
         with:
           aws-region: ${{ secrets.AWS_PIPELINE_REGION }}
           aws-access-key: ${{ secrets.AWS_PIPELINE_ACCESS_KEY }}

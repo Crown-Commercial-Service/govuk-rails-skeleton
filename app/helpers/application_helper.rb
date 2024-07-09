@@ -129,7 +129,7 @@ module ApplicationHelper
   end
 
   def contact_link(link_text)
-    link_to(link_text, Marketplace.support_form_link, target: :blank)
+    link_to(link_text, Marketplace.support_form_link, target: :blank, rel: 'noreferrer noopener')
   end
 
   def accordion_region_items(region_codes, with_overseas: false)
@@ -284,6 +284,33 @@ module ApplicationHelper
         }
       }
     ]
+  end
+
+  def password_strength(password_id)
+    ccs_password_strength(
+      password_id,
+      [
+        {
+          type: :length,
+          value: 8,
+          text: I18n.t('common.passeight')
+        },
+        {
+          type: :symbol,
+          value: '#?!@£$%^&*-',
+          text: I18n.t('common.passsymbol')
+        },
+        {
+          type: :uppercase,
+          text: I18n.t('common.passcap')
+        },
+        {
+          type: :number,
+          text: I18n.t('common.passnum')
+        }
+      ],
+      classes: 'govuk-!-margin-left-2'
+    )
   end
 
   STATUS_TO_COLOUR = {

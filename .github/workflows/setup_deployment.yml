@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - master
+      - main
       - preview
       - production
 
@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "ENV_NAME=$(
             case ${{ github.ref }} in
-              "refs/heads/master")
+              "refs/heads/main")
                 echo "CMPDEV"
                 ;;
               "refs/heads/develop")

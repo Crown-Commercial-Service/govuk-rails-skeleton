@@ -12,7 +12,6 @@ require 'action_controller/railtie'
 require 'action_mailer/railtie'
 require 'action_view/railtie'
 # require "action_cable/engine"
-require 'sprockets/railtie'
 # require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -43,6 +42,9 @@ module Marketplace
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    config.assets.paths << Rails.root.join('node_modules', 'ccs-frontend', 'dist', 'ccs', 'assets')
+    config.assets.paths << Rails.root.join('node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets')
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
@@ -66,11 +68,6 @@ module Marketplace
     config.i18n.default_locale = :en
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
-
-    # Using a sass css compressor causes a scss file to be processed twice (once
-    # to build, once to compress) which breaks the usage of "unquote" to use
-    # CSS that has same function names as SCSS such as max
-    config.assets.css_compressor = nil
 
     # do not add field-with-error div anymore
     ActionView::Base.field_error_proc = proc do |html_tag, _instance|

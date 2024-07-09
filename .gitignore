@@ -21,6 +21,14 @@ logfile
 /node_modules
 /yarn-error.log
 
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
 /public/assets
 .byebug_history
 
@@ -76,9 +84,15 @@ package-lock.json
 # We will compile the typescript as part of the assets pipeline
 app/assets/javascripts/dist/*
 
+# From when we used webpack
 /public/packs
 /public/packs-test
 /node_modules
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
+rollup-config*
+rollup.config-*

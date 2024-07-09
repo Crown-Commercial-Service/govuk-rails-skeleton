@@ -1,0 +1,37 @@
+name: "CI for the project"
+
+on:
+  workflow_call:
+    inputs:
+      publish_test_report:
+        description: 'A trigger to publish the test report'
+        default: false
+        required: false
+        type: boolean
+    secrets:
+      cc_test_reporter_id:
+        description: 'The code climate test report ID'
+        required: false
+
+jobs:
+  run-code-analysis:
+    uses: ./.github/workflows/code_analysis.yml
+
+  run-unit-tests:
+    uses: ./.github/workflows/unit_tests.yml
+    with:
+      publish_test_report: ${{ inputs.publish_test_report }}
+    secrets:
+      cc_test_reporter_id: ${{ secrets.cc_test_reporter_id }}
+    needs:
+      - run-code-analysis
+
+  run-feature-tests:
+    uses: ./.github/workflows/feature_tests.yml
+    needs:
+      - run-code-analysis
+  
+  run-docker-tests:
+    uses: ./.github/workflows/docker_tests.yml
+    needs:
+      - run-code-analysis

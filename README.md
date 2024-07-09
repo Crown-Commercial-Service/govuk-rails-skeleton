@@ -2,7 +2,7 @@
 
 ![GitHub Release](https://img.shields.io/github/release/Crown-Commercial-Service/crown-marketplace.svg?style=flat)
 
-![Test Status](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/rubyonrails.yml/badge.svg)
+![Test Status](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/pull_request_ci.yml/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/37cd5c1a9986ca396884/maintainability)](https://codeclimate.com/github/Crown-Commercial-Service/crown-marketplace/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/37cd5c1a9986ca396884/test_coverage)](https://codeclimate.com/github/Crown-Commercial-Service/crown-marketplace/test_coverage)
 
@@ -10,7 +10,7 @@
 | Environment | Deployment status                                                                                                                                                 |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Sandbox     | ![Latest Sandbox deployment](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/setup_deployment.yml/badge.svg?branch=develop)       |
-| CMPDEV      | ![Latest CMPDEV deployment](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/setup_deployment.yml/badge.svg?branch=master)         |
+| CMPDEV      | ![Latest CMPDEV deployment](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/setup_deployment.yml/badge.svg?branch=main)         |
 | Preview     | ![Latest Preview deployment](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/setup_deployment.yml/badge.svg?branch=preview)       |
 | Production  | ![Latest Production deployment](https://github.com/Crown-Commercial-Service/crown-marketplace/actions/workflows/setup_deployment.yml/badge.svg?branch=production) |
 
@@ -27,9 +27,8 @@ For any other services relating to the Crown Marketplace, please view [Crown Mar
 This guide assumes you have Homebrew installed
 
 #### Check the Ruby version
-> **_NOTE:_** The project currently runs on 3.3.1 (April 2024)
-
-Ensure that a ruby version manager (e.g. rvm or rbenv) is installed and set up properly, using 3.3.1 as the Ruby version before trying anything else. 
+This is a Ruby on Rails application using ruby version `3.3.3`.
+Ensure that, if you are using a ruby environment manager, the correct ruby version is being run in your development environment.
 
 #### Software requirements
 
@@ -51,12 +50,6 @@ Install Redis, for Sidekiq background jobs
 
 ```shell
 brew install redis
-```
-
-Install PhantomJS, for Javascript tests
-
-```shell
-brew install phantomjs
 ```
 
 Install geckodriver, which requires the Firefox browser, for the cucumber feature tests
@@ -99,27 +92,28 @@ See the gem's documentation for an explanation of the precedence of the various 
 If you are new to the project, speak to a developer who should be able to share their `.env.local` with you.
 
 There is more information about environment variables in the [Environment variables](#environment-variables) section of the README
+
 ## Run the project
 
-Execute the following commands in separate terminals:
+You can run the web application and its background services with:
 
 ```shell
-redis-server                # For sidekiq
-bundle exec sidekiq         # Runs backgound jobs
-bin/shakapacker-dev-server  # Watches and bundles the JavaScript assets
-bundle exec rails s         # Runs the web server
+bin/dev
 ```
 
-Visit [localhost:3000](http://localhost:3000).
+This will:
+- bring up the web application on [localhost:3000](http://localhost:3000)
+- watch CSS and JavaScript assets for changes
+- run redis and sidekiq for background jobs
 
-Note, if you are not running background jobs then you do not need to run redis or sidekiq
+If you do not want to run Sidekiq, pass the `--no-sidekiq` to the `bin/dev` command
 
 ## Development
 
 ### Design & frontend
 
 The design of the app is closely based on the [GOV.UK Design System][] with some minor CCS-related variations.
-The project uses and extends the [GOV.UK Frontend][] npm package.
+The project uses and extends the [CCS Frontend][] and [GOV.UK Frontend][] npm packages.
 
 The npm package dependencies are listed in `package.json`, installed using [yarn][], and the exact versions of all dependencies direct/indirect are locked in `yarn.lock`.
 
@@ -244,13 +238,13 @@ Snyk is used more for analysing security issues and it will raise PRs itself for
 
 ## Contributing
 
-To contribute to the project, you should checkout a new branch from `master` and make your changes.
+To contribute to the project, you should checkout a new branch from `main` and make your changes.
 
 Before pushing to the remote, you should squash your commits into a single commit.
-This can be done using `git rebase -i master` and changing `pick` to `s` for the commits you want to squash (usually all but the first).
+This can be done using `git rebase -i main` and changing `pick` to `s` for the commits you want to squash (usually all but the first).
 This is not required but it helps keep the commit history fairly neat and tidy
 
-Once you have pushed your changes, you should open a Pull Request on the master branch.
+Once you have pushed your changes, you should open a Pull Request on the main branch.
 This will run:
 - Rubocop
 - Unit tests
@@ -267,7 +261,7 @@ We have four environments which map to branches on github:
 | Environment | Branch      | Description                                                                       |
 | ----------- | ----------- | --------------------------------------------------------------------------------- |
 | Sandbox     | develop     | Used by developers to try out any changes that will affect the other environments |
-| CMPDEV      | master      | The testing environment                                                           |
+| CMPDEV      | main        | The testing environment                                                           |
 | Preview     | preview     | Environment that matches production and can be used for any final checks          |
 | Production  | production  | The live environment which uses use                                               |
 
@@ -290,20 +284,12 @@ When one of these branches are pushed to, the code will be released to the respe
 We use Pull Requests to manage our deployments to the preview and production environments.
 
 To create a new release:
-- From the release commit (nearly always the HEAD of the master branch) checkout a new branch with the release version in the format:
+- From the release commit (nearly always the HEAD of the main branch) checkout a new branch with the release version in the format:
 `release-<major>.<minor>.<patch>`
-- Push this to GitHub
-- In [GitHub Release][] draft a new release with:
-  - Tag: `v<major>.<minor>.<patch>`
-  - Target: `release-<major>.<minor>.<patch>`
-  - Release title: Release v\<major\>.\<minor\>.\<patch\>
-  - Description: Add the following:
-    - Text mentioning dependabot and Snyk changes
-    - List PRs which fixed BUGs
-    - List PRs that added features
-    - List any misc. PRs
-    - Add a list of Environment Variable changes
-  - Make sure 'Set as the latest release' is ticked
+- Update the version number in the VERSION file
+- Update the CHANGELOG with a list of the changes and their Pull Requests
+- Commit the changes (with the commit message 'Release v<major>.<minor>.<patch>'), push to GitHub and open a Pull Request
+- Once this Pull Request has been reviewed and merged a new GitHub release will be created
 - Once you have published the release, create a Pull Request of the changes on the `preview` and `production` branches.
 - Once the Pull Request has been aproved, merge the Pull Request which will update the `preview/production` branch.
 
@@ -359,11 +345,12 @@ environments:
 [aws-parameter-store]: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html
 [rubocop]: https://github.com/rubocop-hq/rubocop
 [rubocop-rspec]: https://github.com/rubocop-hq/rubocop-rspec
-[lib-cop]: https://github.com/Crown-Commercial-Service/crown-marketplace/tree/master/lib/cop
-[rubocop-yml]: https://github.com/Crown-Commercial-Service/crown-marketplace/blob/master/.rubocop.yml
-[feature-specs]: https://github.com/Crown-Commercial-Service/crown-marketplace/tree/master/spec/features
+[lib-cop]: https://github.com/Crown-Commercial-Service/crown-marketplace/tree/main/lib/cop
+[rubocop-yml]: https://github.com/Crown-Commercial-Service/crown-marketplace/blob/main/.rubocop.yml
+[feature-specs]: https://github.com/Crown-Commercial-Service/crown-marketplace/tree/main/spec/features
 [factory_bot_rails]: https://github.com/thoughtbot/factory_bot_rails
 [GOV.UK Frontend]: https://github.com/alphagov/govuk-frontend
+[CCS Frontend]: https://github.com/tim-s-ccs/ccs-frontend-project
 [yarn]: https://github.com/yarnpkg/yarn
 [GOV.UK Design System]: https://design-system.service.gov.uk/
 [Block Element Modifier]: http://getbem.com/

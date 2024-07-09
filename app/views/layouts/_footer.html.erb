@@ -1,4 +1,9 @@
-<%= render partial: '/layouts/contact_us' if Marketplace.support_form_link.present? %>
+<%= ccs_contact_us(
+  Marketplace.support_form_link,
+  having_problems_text: t('.contact_us.having_problems'),
+  contact_us_link_text: t('.contact_us.contact_us'),
+  contact_us_text: t('.contact_us.support')
+) if Marketplace.support_form_link %>
 <%= ccs_footer(
   meta: {
     items: [

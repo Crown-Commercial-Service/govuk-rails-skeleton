@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Ruby and gems
-        uses: ruby/setup-ruby@v1.177.1
+        uses: ruby/setup-ruby@v1.185.0
         with:
           bundler-cache: true
 
@@ -45,16 +45,13 @@ jobs:
         run: bin/rails db:test:prepare
 
       - name: Compile assets
-        run: NODE_OPTIONS=--openssl-legacy-provider bin/rails assets:precompile
-
-      - name: Check JavaScript code quality
-        run: yarn run eslint app/javascript/
+        run: bin/rails assets:precompile
 
       - name: Run unit tests
         run: bin/rake
 
       - name: publish code coverage
-        uses: paambaati/codeclimate-action@v6.0.0
+        uses: paambaati/codeclimate-action@v8.0.0
         with:
           debug: true
         if: ${{ inputs.publish_test_report }}

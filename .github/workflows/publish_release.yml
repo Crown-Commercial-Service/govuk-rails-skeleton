@@ -1,0 +1,106 @@
+name: Publish release to GitHub
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: publish
+
+jobs:
+  check_for_release:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.release_version.outputs.version }}
+      exists: ${{ steps.version_tag.outputs.exists }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get release version
+        id: release_version
+        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Check if version tag already exists
+        id: version_tag
+        uses: mukunku/tag-exists-action@bdad1eaa119ce71b150b952c97351c75025c06a9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: v${{ steps.release_version.outputs.version }}
+
+  release:
+    if: ${{ needs.check_for_release.outputs.exists == 'false' }}
+
+    needs: [check_for_release]
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_level: warn
+          version: ${{ needs.check_for_release.outputs.version }}
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.check_for_release.outputs.version }}
+          name: Release v${{ needs.check_for_release.outputs.version }}
+          body: ${{ steps.changelog_reader.outputs.changes }}
+
+  create_pull_requests:
+    if: ${{ needs.check_for_release.outputs.exists == 'false' }}
+
+    needs: [release, check_for_release]
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: v${{ needs.check_for_release.outputs.version }}
+
+      - name: Create release branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git switch -c production-release-v${{ needs.check_for_release.outputs.version }}
+          git rebase origin/production --strategy-option ours
+          git push --set-upstream origin production-release-v${{ needs.check_for_release.outputs.version }}
+
+      - name: Create release Pull Request - Preview
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            -B preview \
+            -H production-release-v${{ needs.check_for_release.outputs.version }} \
+            -t "PREVIEW - Release v${{ needs.check_for_release.outputs.version }}" \
+            -b "See [Release v${{ needs.check_for_release.outputs.version }}](https://github.com/Crown-Commercial-Service/crown-marketplace/releases/tag/v${{ needs.check_for_release.outputs.version }})"
+
+      - name: Create release Pull Request - Production
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            -B production \
+            -H production-release-v${{ needs.check_for_release.outputs.version }} \
+            -t "PRODUCTION - Release v${{ needs.check_for_release.outputs.version }}" \
+            -b "See [Release v${{ needs.check_for_release.outputs.version }}](https://github.com/Crown-Commercial-Service/crown-marketplace/releases/tag/v${{ needs.check_for_release.outputs.version }})"

@@ -569,23 +569,23 @@ class FindAddress implements FindAddressInterface {
 
   private readonly updateFocus = (state: number): void => {
     switch (state) {
-    case 1:
-      this.postcodeSearch.focus()
-      break
-    case 2:
-      this.selectAnAddress.focus()
-      break
-    case 3:
-      this.selectAnAddress.focus()
-      break
-    case 4:
-      this.selectARegion?.focus()
-      break
-    case 5:
-      this.selectedRegion?.focus()
-      break
-    default:
-      break
+      case 1:
+        this.postcodeSearch.focus()
+        break
+      case 2:
+        this.selectAnAddress.focus()
+        break
+      case 3:
+        this.selectAnAddress.focus()
+        break
+      case 4:
+        this.selectARegion?.focus()
+        break
+      case 5:
+        this.selectedRegion?.focus()
+        break
+      default:
+        break
     }
   }
 

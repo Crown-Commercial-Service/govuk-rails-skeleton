@@ -39,7 +39,7 @@
           hint: {
             text: capture do
               concat(tag.p(t('.password'), class: 'govuk-body'))
-              concat(render('/layouts/password-strength', text: 'password01'))
+              concat(password_strength('password01'))
             end
           },
           form_group: {

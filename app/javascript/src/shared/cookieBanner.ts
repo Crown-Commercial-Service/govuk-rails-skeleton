@@ -64,7 +64,11 @@ const removeGACookies = (cookieBannerFormData: CookieBannerFormData, successFunc
       success = false
     },
     complete () {
-      success ? successFunction() : failureFunction()
+      if(success) {
+        successFunction()
+      } else {
+        failureFunction()
+      }
     }
   }).catch(() => {
     failureFunction()
