@@ -47,7 +47,7 @@ ENV APP_RUN_PRECOMPILE_ASSETS=$APP_RUN_PRECOMPILE_ASSETS
 ##_PARAMETER_STORE_MARKER_##
 
 # Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
 # As this is a multistage Docker image build
 # we will pull in the contents from the previous node image build stage

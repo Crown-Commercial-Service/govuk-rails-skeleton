@@ -9,18 +9,18 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/jquery": "^3.5.30",
     "@types/js-cookie": "^3.0.6",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.16.0",
     "@types/rails__ujs": "^6.0.4",
     "@types/turbolinks": "^5.2.2",
-    "ccs-frontend": "^1.1.0",
-    "govuk-frontend": "^5.4.0",
+    "ccs-frontend": "^1.1.2",
+    "govuk-frontend": "^5.5.0",
     "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
-    "rollup": "^4.18.0",
-    "sass": "^1.77.6",
+    "rollup": "^4.21.0",
+    "sass": "^1.77.8",
     "tslib": "^2.6.3",
     "turbolinks": "^5.2.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "scripts": {
     "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --style=compressed --no-source-map --load-path=node_modules",
@@ -29,11 +29,11 @@
     "lint:fix": "eslint --fix app/javascript/"
   },
   "devDependencies": {
-    "@eslint/js": "^9.6.0",
-    "@stylistic/eslint-plugin-js": "^2.3.0",
-    "@stylistic/eslint-plugin-ts": "^2.3.0",
+    "@eslint/js": "^9.9.0",
+    "@stylistic/eslint-plugin-js": "^2.6.4",
+    "@stylistic/eslint-plugin-ts": "^2.6.4",
     "@types/eslint__js": "^8.42.3",
-    "eslint": "^9.6.0",
-    "typescript-eslint": "^8.0.0-alpha.39"
+    "eslint": "^9.9.0",
+    "typescript-eslint": "^8.1.0"
   }
 }

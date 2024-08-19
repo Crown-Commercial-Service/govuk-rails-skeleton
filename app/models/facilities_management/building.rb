@@ -116,7 +116,7 @@ module FacilitiesManagement
     end
 
     def combined_area_positive?
-      false if gia.nil? || external_area.nil?
+      return false if gia.nil? || external_area.nil?
 
       (gia.to_i + external_area.to_i).positive?
     end

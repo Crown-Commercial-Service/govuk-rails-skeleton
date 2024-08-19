@@ -56,7 +56,7 @@ gem 'devise', '~> 4.9.4'
 gem 'auto-session-timeout', '~> 1.1'
 
 # for cognito
-gem 'aws-sdk-cognitoidentityprovider', '~> 1.97.0'
+gem 'aws-sdk-cognitoidentityprovider', '~> 1.100.0'
 
 # for pagination
 gem 'kaminari', '~> 1.2.2'
@@ -72,7 +72,7 @@ gem 'aasm', '~> 5.5'
 gem 'after_commit_everywhere', '~> 1.4'
 
 # for running background jobs
-gem 'sidekiq', '~> 7.3.0'
+gem 'sidekiq', '~> 7.3.1'
 gem 'sinatra', '~> 4.0.0', require: false
 gem 'slim', '~> 5.2.1'
 gem 'sidekiq-cron'
@@ -111,7 +111,7 @@ gem 'asset_sync', '>= 2.19.1'
 gem 'fog-aws', '>= 3.14.0'
 
 # Use CCS Frontend Helpers
-gem 'ccs-frontend_helpers', '~> 1.1.0'
+gem 'ccs-frontend_helpers', '~> 1.1.2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -134,7 +134,7 @@ group :development, :test do
   gem 'wdm', '>= 0.1.0', platforms: %i[x64_mingw]
   gem 'tzinfo-data', platforms: %i[x64_mingw]
   gem 'bullet', require: true
-  gem 'faker', '~> 3.4.1'
+  gem 'faker', '~> 3.4.2'
 end
 
 group :development do
