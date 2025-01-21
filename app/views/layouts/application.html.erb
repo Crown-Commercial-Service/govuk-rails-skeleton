@@ -18,9 +18,8 @@
     <%= favicon_link_tag asset_path("images/ccs-icon-#{size}.png"), rel: 'apple-touch-icon', type: 'image/png', size:"#{size}x#{size}" %>
     <% end %>
 
-    <%= tag :meta, name: 'turbolinks-cache-control', content: 'no-cache' %>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload', type: 'module' %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_include_tag 'application', type: 'module' %>
 
     <%= render partial: '/shared/google/tag_manager_head' if Marketplace.google_tag_manager_tracking_id.present? %>
   </head>
@@ -34,7 +33,7 @@
     <% end %>
 
     <div id="wrapper">
-      <%= govuk_skip_link(t('.skip'), '#main-content', attributes: { data: { turbolinks: false } })%>
+      <%= govuk_skip_link(t('.skip'), '#main-content')%>
       <%= render partial: '/layouts/cookie-banner' unless cookie_preferences_settings['settings_viewed'] || controller.action_name == 'cookie_settings' %>
       <%= render partial: '/layouts/header' %>
 

@@ -4,12 +4,7 @@
     errors.attribute_names.map do |attribute|
       {
         text: errors[attribute].first,
-        href: "##{error_id(attribute)}",
-        attributes: {
-          data: {
-            turbolinks: false
-          }
-        }
+        href: "##{error_id(attribute)}"
       }
     end
   ) %>

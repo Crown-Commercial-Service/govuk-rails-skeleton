@@ -1,14 +1,18 @@
 # Set the alpine version so they match for both images
-ARG ALPINE_VERSION=3.19
+ARG ALPINE_VERSION=3.21
 
 # Set the NodeJS version
-ARG NODE_VERSION=iron
+ARG NODE_VERSION=jod
 
 # Set the Ruby version
-ARG RUBY_VERSION=3.3.3
+ARG RUBY_VERSION=3.4.1
 
 # Pull in the NodeJS image
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS node
+
+# Remove yarn as we already have it downloaded in the app
+RUN rm /usr/local/bin/yarn && \
+    rm /usr/local/bin/yarnpkg
 
 # Pull in the Ruby image
 FROM ruby:${RUBY_VERSION}-alpine${ALPINE_VERSION} AS base
@@ -54,6 +58,7 @@ FROM base AS build
 # to our current ruby build image stage
 # so that the ruby image build stage has the correct nodejs version
 COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /usr/local/lib /usr/local/lib
 
 # Install application dependencies
 RUN apk add --update --no-cache \
@@ -61,7 +66,6 @@ RUN apk add --update --no-cache \
     curl \
     git \
     libpq-dev \
-    npm \
     tzdata
 
 # Enable corepack for yarn

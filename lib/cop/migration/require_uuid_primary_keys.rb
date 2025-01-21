@@ -1,13 +1,13 @@
 module RuboCop
   module Cop
     module Migration
-      class RequireUUIDPrimaryKeys < RuboCop::Cop::Cop
+      class RequireUUIDPrimaryKeys < RuboCop::Cop::Base
         MSG = 'Use UUIDs for database primary keys (with the `id: :uuid` option)'.freeze
 
         def on_send(node)
           return unless node.method_name == :create_table
 
-          add_offense(node, location: :expression) unless uuid_option_set?(node)
+          add_offense(node.loc.expression) unless uuid_option_set?(node)
         end
 
         private

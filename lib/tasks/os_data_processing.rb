@@ -3,7 +3,7 @@ module OrdnanceSurvey
   def self.upsert_csv_data(csv_stream)
     fully_processed = true
     csv_headers     = os_address_headers.downcase.split(',').map(&:to_sym)
-    SmarterCSV.process(csv_stream, user_provided_headers: csv_headers, chunk_size: 1000, remove_blank_values: false) do |chunk|
+    SmarterCSV.process(csv_stream, user_provided_headers: csv_headers, headers_in_file: true, chunk_size: 1000, remove_blank_values: false) do |chunk|
       ActiveRecord::Base.connection_pool.with_connection do |db|
         db.begin_db_transaction
         chunk.each do |row|

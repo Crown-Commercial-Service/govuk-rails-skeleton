@@ -18,7 +18,7 @@ module FacilitiesManagement::RM6232
           @errors << { error: 'supplier_details_missing_sheets' }
         elsif supplier_details_workbook.sheet('RM6232 Suppliers Details').last_row == 1
           @errors << { error: 'supplier_details_has_empty_sheets' }
-        elsif !(supplier_details_workbook.sheet('RM6232 Suppliers Details').row(1) == SUPPLIER_DETAILS_HEADERS || supplier_details_workbook.sheet('RM6232 Suppliers Details').row(1) == SUPPLIER_DETAILS_HEADERS_ACTIVE)
+        elsif [SUPPLIER_DETAILS_HEADERS, SUPPLIER_DETAILS_HEADERS_ACTIVE].exclude?(supplier_details_workbook.sheet('RM6232 Suppliers Details').row(1))
           @errors << { error: 'supplier_details_has_incorrect_headers' }
         end
       end

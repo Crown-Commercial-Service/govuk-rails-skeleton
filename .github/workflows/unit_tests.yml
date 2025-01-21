@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Ruby and gems
-        uses: ruby/setup-ruby@v1.190.0
+        uses: ruby/setup-ruby@v1.213.0
         with:
           bundler-cache: true
 
@@ -51,7 +51,7 @@ jobs:
         run: bin/rake
 
       - name: publish code coverage
-        uses: paambaati/codeclimate-action@v8.0.0
+        uses: paambaati/codeclimate-action@v9.0.0
         with:
           debug: true
         if: ${{ inputs.publish_test_report }}

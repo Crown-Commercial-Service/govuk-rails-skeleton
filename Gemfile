@@ -1,14 +1,14 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.3.3'
+ruby '3.4.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.1.3'
+gem 'rails', '~> 7.1.5'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma', '~> 6.4'
+gem 'puma', '~> 6.5'
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem 'propshaft'
@@ -19,10 +19,8 @@ gem 'cssbundling-rails', '~> 1.4'
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'jsbundling-rails', '~> 1.3'
 
-gem 'turbolinks', '~> 5'
-
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.12'
+gem 'jbuilder', '~> 2.13'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -43,7 +41,7 @@ gem 'caxlsx', '>= 3.2.0'
 gem 'caxlsx_rails', '>= 0.6.3'
 gem 'virtus'
 
-gem 'rollbar', '~> 3.5.2'
+gem 'rollbar', '~> 3.6.0'
 
 # for dfe sign in
 gem 'omniauth', '~> 2.1.2'
@@ -53,10 +51,10 @@ gem 'omniauth-oauth2', '~> 1.8.0'
 gem 'devise', '~> 4.9.4'
 
 # for timing out when session expires
-gem 'auto-session-timeout', '~> 1.1'
+gem 'auto-session-timeout', '~> 1.2'
 
 # for cognito
-gem 'aws-sdk-cognitoidentityprovider', '~> 1.100.0'
+gem 'aws-sdk-cognitoidentityprovider', '~> 1.113.0'
 
 # for pagination
 gem 'kaminari', '~> 1.2.2'
@@ -69,11 +67,11 @@ gem 'roo', '~> 2.10.1'
 
 # state machine
 gem 'aasm', '~> 5.5'
-gem 'after_commit_everywhere', '~> 1.4'
+gem 'after_commit_everywhere', '~> 1.5'
 
 # for running background jobs
-gem 'sidekiq', '~> 7.3.1'
-gem 'sinatra', '~> 4.0.0', require: false
+gem 'sidekiq', '~> 7.3.7'
+gem 'sinatra', '~> 4.1.1', require: false
 gem 'slim', '~> 5.2.1'
 gem 'sidekiq-cron'
 
@@ -94,7 +92,7 @@ gem 'ratonvirus-clamby', '>= 0.3.0'
 # for active storage validation
 gem 'active_storage_validations', '>= 1.0.3'
 # gem for  bulk inserts
-gem 'activerecord-import', '~> 1.7.0'
+gem 'activerecord-import', '~> 1.8.1'
 # gov notify
 gem 'notifications-ruby-client'
 # DOCX generation
@@ -111,7 +109,7 @@ gem 'asset_sync', '>= 2.19.1'
 gem 'fog-aws', '>= 3.14.0'
 
 # Use CCS Frontend Helpers
-gem 'ccs-frontend_helpers', '~> 1.1.2'
+gem 'ccs-frontend_helpers', '~> 2.1.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -134,7 +132,7 @@ group :development, :test do
   gem 'wdm', '>= 0.1.0', platforms: %i[x64_mingw]
   gem 'tzinfo-data', platforms: %i[x64_mingw]
   gem 'bullet', require: true
-  gem 'faker', '~> 3.4.2'
+  gem 'faker', '~> 3.5.1'
 end
 
 group :development do

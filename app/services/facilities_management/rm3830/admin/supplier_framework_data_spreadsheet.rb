@@ -81,7 +81,7 @@ module FacilitiesManagement::RM3830
     def service_unit(service)
       if service['unit_text']
         service['unit_text']
-      elsif service['code'] == 'M.1' || service['code'] == 'N.1'
+      elsif ['M.1', 'N.1'].include?(service['code'])
         'Percentage of Year 1 Deliverables Value (excluding Management and Corporate Overhead, and Profit) at call-off.'
       end
     end

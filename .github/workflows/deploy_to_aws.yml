@@ -39,7 +39,7 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
       - name: Trigger AWS CodePipeline - main container
-        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.5
+        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.10
         with:
           aws-region: ${{ secrets.AWS_PIPELINE_REGION }}
           aws-access-key: ${{ secrets.AWS_PIPELINE_ACCESS_KEY }}
@@ -54,7 +54,7 @@ jobs:
       name: ${{ inputs.environment }}
     steps:
       - name: Trigger AWS CodePipeline - sidekiq container
-        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.5
+        uses: Crown-Commercial-Service/ccs-aws-codepipeline-action@v1.1.10
         with:
           aws-region: ${{ secrets.AWS_PIPELINE_REGION }}
           aws-access-key: ${{ secrets.AWS_PIPELINE_ACCESS_KEY }}

@@ -18,9 +18,8 @@
     <%= favicon_link_tag asset_path("images/ccs-icon-#{size}.png"), rel: 'apple-touch-icon', type: 'image/png', size:"#{size}x#{size}" %>
     <% end %>
 
-    <%= tag :meta, name: 'turbolinks-cache-control', content: 'no-cache' %>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload', type: 'module' %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_include_tag 'application', type: 'module' %>
 
     <%= render partial: '/shared/google/tag_manager_head' if Marketplace.google_tag_manager_tracking_id.present? %>
   </head>
@@ -29,12 +28,12 @@
     <%= javascript_tag nonce: true do -%>
       document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
     <% end -%>
-    <% if Rails.env.production? && current_user %>
-      <%= auto_session_timeout_js %>
+    <% if Rails.env.production? && user_signed_in? %>
+      <%= auto_session_timeout_js(attributes: { nonce: true }) %>
     <% end %>
 
     <div class="error-content">
-      <%= govuk_skip_link(t('layouts.application.skip'), '#main-content', attributes: { data: { turbolinks: false } })%>
+      <%= govuk_skip_link(t('layouts.application.skip'), '#main-content')%>
       <%= render partial: '/layouts/cookie-banner' unless cookie_preferences_settings['settings_viewed'] || controller.action_name == 'cookie_settings' %>
       <%= render partial: '/layouts/header' %>
 

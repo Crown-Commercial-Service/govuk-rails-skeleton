@@ -47,7 +47,7 @@ module FacilitiesManagement::Admin
                                  end
 
           service_rows.each do |service_row|
-            if service_row[0] == 'M.1' || service_row[0] == 'N.1'
+            if ['M.1', 'N.1'].include?(service_row[0])
               sheet.add_row [supplier] + service_row + rates_m_and_n
             else
               sheet.add_row [supplier] + service_row + rates
@@ -177,7 +177,7 @@ module FacilitiesManagement::Admin
     def service_unit(service)
       if service['unit_text']
         service['unit_text']
-      elsif service['code'] == 'M.1' || service['code'] == 'N.1'
+      elsif ['M.1', 'N.1'].include?(service['code'])
         'Percentage of Year 1 Deliverables Value (excluding Management and Corporate Overhead, and Profit) at call-off.'
       end
     end

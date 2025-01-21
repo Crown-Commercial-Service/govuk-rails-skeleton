@@ -185,7 +185,7 @@ class CrownMarketplace::ManageUsersController < CrownMarketplace::FrameworkContr
       service_access: params[:service_access],
       email: params[:email],
       telephone_number: params[:telephone_number]
-    }.select { |_, value| value.present? }
+    }.compact_blank
   end
 
   ADD_USER_SECTIONS = %i[select_role select_service_access enter_user_details].freeze

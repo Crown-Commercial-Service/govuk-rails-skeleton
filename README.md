@@ -27,7 +27,7 @@ For any other services relating to the Crown Marketplace, please view [Crown Mar
 This guide assumes you have Homebrew installed
 
 #### Check the Ruby version
-This is a Ruby on Rails application using ruby version `3.3.3`.
+This is a Ruby on Rails application using ruby version `3.4.1`.
 Ensure that, if you are using a ruby environment manager, the correct ruby version is being run in your development environment.
 
 #### Software requirements

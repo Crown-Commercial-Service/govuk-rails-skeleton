@@ -7,7 +7,6 @@ module FacilitiesManagement::RM3830::Admin::SupplierRatesHelper
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def self.work_package_to_services(services, work_packages)
     full_services = []
 
@@ -20,10 +19,9 @@ module FacilitiesManagement::RM3830::Admin::SupplierRatesHelper
       service['standard_b'] = standards.include? 'B'
       service['standard_c'] = standards.include? 'C'
 
-      service['value_type'] = service['code'] == 'M' || service['code'] == 'N' ? 'percentage' : 'money'
+      service['value_type'] = ['M', 'N'].include?(service['code']) ? 'percentage' : 'money'
 
       full_services.push(service)
     end
   end
-  # rubocop:enable Metrics/AbcSize
 end

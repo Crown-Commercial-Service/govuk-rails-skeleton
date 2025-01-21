@@ -1,7 +1,7 @@
 module RuboCop
   module Cop
     module Migration
-      class RequireLimitOnString < RuboCop::Cop::Cop
+      class RequireLimitOnString < RuboCop::Cop::Base
         MSG = 'Specify a limit when using the `string` column type. Use `text` if no limit is needed'.freeze
 
         def on_send(node)
@@ -20,7 +20,7 @@ module RuboCop
         def check_options(node, type, opts)
           return unless type == :string
 
-          add_offense(node, location: :expression) unless length_option_set?(opts)
+          add_offense(node.loc.expression) unless length_option_set?(opts)
         end
 
         def length_option_set?(opts)

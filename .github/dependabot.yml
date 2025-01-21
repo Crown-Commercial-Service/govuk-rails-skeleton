@@ -42,10 +42,7 @@ updates:
       rails:
         patterns:
           - '@rails/*'
-          - 'turbolinks'
-          - 'turbolinks*'
           - '@types/rails__ujs'
-          - '@types/turbolinks'
 
       lint:
         patterns:

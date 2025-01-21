@@ -7,7 +7,7 @@ module CrownMarketplace::ManageUsersHelper
       telephone_number: user.telephone_number
     }
 
-    add_user_crown_marketplace_manage_users_path(section: section_name, **link_params.select { |_, value| value.present? })
+    add_user_crown_marketplace_manage_users_path(section: section_name, **link_params.compact_blank)
   end
 
   def enabled_disabled_status_tag(enabled)

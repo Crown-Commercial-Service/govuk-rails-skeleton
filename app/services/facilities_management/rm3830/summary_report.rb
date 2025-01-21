@@ -184,7 +184,7 @@ module FacilitiesManagement
 
         copy_params building, uvals
 
-        uvals_remove_cafm_help = remove_cafm_help == true ? uvals.reject { |x| x[:service_code] == 'M.1' || x[:service_code] == 'N.1' } : uvals
+        uvals_remove_cafm_help = remove_cafm_help == true ? uvals.reject { |x| ['M.1', 'N.1'].include?(x[:service_code]) } : uvals
 
         calc_fm = Calculator.new(@contract_length_years,
                                  @tupe_required,
