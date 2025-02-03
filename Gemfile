@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '3.4.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.1.5'
+gem 'rails', '~> 7.2.2'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -92,7 +92,7 @@ gem 'ratonvirus-clamby', '>= 0.3.0'
 # for active storage validation
 gem 'active_storage_validations', '>= 1.0.3'
 # gem for  bulk inserts
-gem 'activerecord-import', '~> 1.8.1'
+gem 'activerecord-import', '~> 2.0.0'
 # gov notify
 gem 'notifications-ruby-client'
 # DOCX generation
